@@ -1,8 +1,11 @@
-export const App = () => {
+import { InfoForm } from "./components/InfoForm";
 
+export const App = () => {
   return (
-    <main>
-      <h1 className="text-3xl font-bold">Hello, Frontend</h1>
+    <main className="flex items-start justify-center min-h-screen bg-neutral-200 w-full p-4">
+      <div>
+        <InfoForm />
+      </div>
     </main>
-  )
-}
+  );
+};
