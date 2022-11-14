@@ -28,7 +28,7 @@ export const InfoForm = () => {
 
   return (
     <form
-      className="shadow-sm w-80 px-4 py-6 bg-white rounded-lg"
+      className="shadow-sm w-80 md:w-96 px-4 py-6 md:py-8 lg:py-6 bg-white rounded-lg"
       onSubmit={onPost}
     >
       <h1 className="text-2xl font-bold text-center">Add your info</h1>
