@@ -1,19 +1,50 @@
 import { useEffect, useState } from "react";
 
-export const InfoForm = () => {
+import axios from "axios";
+
+export const InfoForm = ({ setData }) => {
   const [info, setInfo] = useState({
     name: "",
     country: "",
   });
 
+  const [reload, setReload] = useState(false);
+
   const [countryList, setCountryList] = useState([]);
 
   const onPost = (e) => {
     e.preventDefault();
-    console.log(info);
+
+    if (!info.name || !info.country) {
+      alert("Please fill out all fields");
+      return;
+    }
+
+    axios.post(
+      "http://ec2-3-145-124-35.us-east-2.compute.amazonaws.com/create",
+      {
+        id: Math.floor(Math.random() * 1000),
+        name: info.name,
+        country: info.country,
+      }
+    );
+    setReload(true);
   };
 
   useEffect(() => {
+    const fetchCountries = async () => {
+      if (reload) setReload(false);
+
+      await axios
+        .get("http://ec2-3-145-124-35.us-east-2.compute.amazonaws.com/list")
+        .then(({ data }) => {
+          setData(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     fetch("https://restcountries.com/v2/all")
       .then((response) => {
         return response.json();
@@ -24,7 +55,9 @@ export const InfoForm = () => {
       .catch(() => {
         console.log("error, fetch");
       });
-  }, []);
+
+    fetchCountries();
+  }, [reload]);
 
   return (
     <form
@@ -60,6 +93,7 @@ export const InfoForm = () => {
             className="mt-1 block px-2 py-1 w-full border-[1.25px] border-gray-200 rounded-md shadow-sm"
             onChange={(e) => setInfo({ ...info, country: e.target.value })}
           >
+            <option value="">Select a country</option>
             {countryList.map(({ name }) => {
               return (
                 <option key={name} value={name}>
@@ -72,7 +106,7 @@ export const InfoForm = () => {
       </div>
 
       <button
-        className="w-full py-2 bg-emerald-500 rounded-md text-white font-semibold"
+        className="w-full py-2 bg-emerald-500 rounded-md text-white font-semibold transition-colors duration-300 hover:bg-emerald-600"
         type="submit"
       >
         Submit
